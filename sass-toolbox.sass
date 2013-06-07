@@ -1,9 +1,132 @@
+// Dimensions
+//============================================================
+$base_width: 1200px
+$gutter: 30px
+
+
+//  Functions
+//============================================================
+@function perc($inner, $container: $base_width)
+  @return percentage($inner/$container)
+  // perc(50px, 100px) = 50%
+
+@function img($url)
+  @return url(image-path($url))
+
+
 //============================================================
 //
-// Stylus CSS3 Mixins
+// Vertically center absolute positioned elements
 //
-// @description CSS3 mixins for projects using Stylus
-// @see http://learnboost.github.com/stylus/
+// height: $elementHeight
+// top: 50%
+// margin-top: negativeHalf($elementHeight)
+//
+//============================================================
+@function negativeHalf($size)
+  @return (($size / 2) * -1)
+
+
+// Misc.
+//============================================================
+@mixin triangle($color: #000, $width: 30px, $height: 30px)
+  width: 0
+  height: 0
+  border-style: solid
+  border-width: 0 ($width / 2) $height ($width / 2)
+  border-color: transparent transparent $color transparent
+
+
+@mixin clearfix
+  zoom: 1
+  &:before, &:after
+    content: ""
+    display: table
+
+  &:after
+    clear: both
+
+
+@mixin antialias
+  -webkit-font-smoothing: antialiased
+
+
+// Text wrapping
+//============================================================
+
+@mixin ellipsis
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+
+
+@mixin wrap-text
+  white-space: normal
+  overflow: visible
+
+
+//============================================================
+//
+// Used alongside Symbolset
+//
+// @include icon
+// font-family: "SSGizmo"
+//
+//============================================================
+@mixin icon
+  font-style: normal
+  font-weight: normal
+  text-decoration: none
+  text-rendering: optimizeLegibility
+  white-space: nowrap
+  -moz-font-feature-settings: "liga=1"
+  -moz-font-feature-settings: "liga"
+  -ms-font-feature-settings: "liga" 1
+  -o-font-feature-settings: "liga"
+  font-feature-settings: "liga"
+  -webkit-font-smoothing: antialiased
+
+
+//============================================================
+//
+// Media queries
+//
+// @include max-width($bp_sidebarHides)
+//   width: 100%
+//
+//============================================================
+
+@mixin respond-to($media)
+  @media only screen and ($media)
+    @content
+
+
+@mixin max-width($media)
+  @media only screen and (max-width: $media)
+    @content
+
+
+@mixin min-width($media)
+  @media only screen and (min-width: $media)
+    @content
+
+
+@mixin max-height($media)
+  @media only screen and (max-height: $media)
+    @content
+
+
+@mixin min-height($media)
+  @media only screen and (min-height: $media)
+    @content
+
+
+//============================================================
+//
+// SASS CSS3 Mixins
+//
+// @description CSS3 mixins for projects using SASS
+// @see http://sass-lang.com/
 // @version 2.00
 //
 // @author Matthew Wagerfield
@@ -23,9 +146,6 @@
 // @mixin appearance
 //
 // Decoration:
-// @mixin border-radius
-// @mixin box-shadow
-// @mixin text-shadow
 // @mixin linear-gradient
 // @mixin radial-gradient
 //
@@ -52,10 +172,10 @@
 
 
 // Default Browser Support
-defaultWebkitSupport = true
-defaultFirefoxSupport = true
-defaultExplorerSupport = true
-defaultOperaSupport = true
+$defaultWebkitSupport: true
+$defaultFirefoxSupport: true
+$defaultExplorerSupport: true
+$defaultOperaSupport: true
 
 
 
@@ -72,14 +192,16 @@ defaultOperaSupport = true
 //
 //============================================================
 
-prefix-property(property, value, supportWebkit = defaultWebkitSupport, supportFirefox = defaultFirefoxSupport, supportExplorer = defaultExplorerSupport, supportOpera = defaultOperaSupport)
-
-  if supportWebkit   { -webkit-{property} value }
-  if supportFirefox  {    -moz-{property} value }
-  if supportExplorer {     -ms-{property} value }
-  if supportOpera    {      -o-{property} value }
-
-  {property} value
+=prefix-property($property, $value, $supportWebkit: $defaultWebkitSupport, $supportFirefox: $defaultFirefoxSupport, $supportExplorer: $defaultExplorerSupport, $supportOpera: $defaultOperaSupport)
+  @if $supportWebkit
+    -webkit-#{$property}: $value
+  @if $supportFirefox
+    -moz-#{$property}: $value
+  @if $supportExplorer
+    -ms-#{$property}: $value
+  @if $supportOpera
+    -o-#{$property}: $value
+  #{$property}: $value
 
 
 
@@ -96,14 +218,16 @@ prefix-property(property, value, supportWebkit = defaultWebkitSupport, supportFi
 //
 //============================================================
 
-prefix-value(property, value, supportWebkit = defaultWebkitSupport, supportFirefox = defaultFirefoxSupport, supportExplorer = defaultExplorerSupport, supportOpera = defaultOperaSupport)
-
-  if supportWebkit   { {property} s('-webkit-%s', value) }
-  if supportFirefox  { {property}    s('-moz-%s', value) }
-  if supportExplorer { {property}     s('-ms-%s', value) }
-  if supportOpera    { {property}      s('-o-%s', value) }
-
-  {property} value
+=prefix-value($property, $value, $supportWebkit: $defaultWebkitSupport, $supportFirefox: $defaultFirefoxSupport, $supportExplorer: $defaultExplorerSupport, $supportOpera: $defaultOperaSupport)
+  @if $supportWebkit
+    #{$property}: -webkit-#{$value}
+  @if $supportFirefox
+    #{$property}: -moz-#{$value}
+  @if $supportExplorer
+    #{$property}: -ms-#{$value}
+  @if $supportOpera
+    #{$property}: -o-#{$value}
+  #{$property}: $value
 
 
 
@@ -116,8 +240,8 @@ prefix-value(property, value, supportWebkit = defaultWebkitSupport, supportFiref
 //
 //============================================================
 
-display-box()
-  prefix-value(display, box)
+=display-box
+  +prefix-value(display, box)
 
 
 
@@ -134,8 +258,8 @@ display-box()
 //
 //============================================================
 
-box-orient()
-  prefix-property(box-orient, arguments)
+=box-orient($arguments)
+  +prefix-property(box-orient, unquote($arguments))
 
 
 
@@ -153,8 +277,8 @@ box-orient()
 //
 //============================================================
 
-box-pack()
-  prefix-property(box-pack, arguments)
+=box-pack($arguments)
+  +prefix-property(box-pack, unquote($arguments))
 
 
 
@@ -173,8 +297,8 @@ box-pack()
 //
 //============================================================
 
-box-align()
-  prefix-property(box-align, arguments)
+=box-align($arguments)
+  +prefix-property(box-align, unquote($arguments))
 
 
 
@@ -189,8 +313,8 @@ box-align()
 //
 //============================================================
 
-box-flex()
-  prefix-property(box-flex, arguments)
+=box-flex($arguments)
+  +prefix-property(box-flex, unquote($arguments))
 
 
 
@@ -207,8 +331,8 @@ box-flex()
 //
 //============================================================
 
-box-sizing()
-  prefix-property(box-sizing, arguments)
+=box-sizing($arguments)
+  +prefix-property(box-sizing, unquote($arguments))
 
 
 
@@ -228,9 +352,9 @@ box-sizing()
 //
 //============================================================
 
-user-select()
-  prefix-property(user-select, arguments)
-  prefix-property(touch-callout, arguments, true, false, false, false)
+=user-select($arguments)
+  +prefix-property(user-select, unquote($arguments))
+  +prefix-property(touch-callout, unquote($arguments), true, false, false, false)
 
 
 
@@ -259,65 +383,8 @@ user-select()
 //
 //============================================================
 
-appearance()
-  prefix-property(appearance, arguments, true, true, false, false)
-
-
-
-//============================================================
-//
-// border-radius
-//
-// @param top-left-radius     :  px, em, %
-// @param top-right-radius    :  px, em, %
-// @param bottom-right-radius :  px, em, %
-// @param bottom-left-radius  :  px, em, %
-//
-// @see http://www.w3.org/TR/css3-background/#border-radius
-//
-//============================================================
-
-border-radius()
-  prefix-property(border-radius, arguments)
-  prefix-property(background-clip, padding-box, true, true, false, false)
-
-
-
-//============================================================
-//
-// box-shadow
-//
-// @param color               :  #000, rgba, hsla
-// @param horizontal-offset   :  px, em
-// @param vertical-offset     :  px, em
-// @param blur-radius         :  px, em
-// @param spread-distance     :  px, em
-// @param inset               :  inset
-//
-// @see http://www.w3.org/TR/css3-background/#box-shadow
-//
-//============================================================
-
-box-shadow()
-  prefix-property(box-shadow, arguments)
-
-
-
-//============================================================
-//
-// text-shadow
-//
-// @param color               :  #000, rgba, hsla
-// @param horizontal-offset   :  px, em
-// @param vertical-offset     :  px, em
-// @param blur-radius         :  px, em
-//
-// @see http://www.w3.org/TR/css3-text/#text-shadow
-//
-//============================================================
-
-text-shadow()
-  prefix-property(text-shadow, arguments, false, false, false, false)
+=appearance($arguments)
+  +prefix-property(appearance, unquote($arguments), true, true, false, false)
 
 
 
@@ -330,14 +397,14 @@ text-shadow()
 // @param colorB              :  #000 50%, red 50%
 // @param colorC              :  #000 100%, red 100%
 //
-// @example linear-gradient(unquote("top, crimson 0%, black 100%"))
+// @example +linear-gradient("top, crimson 0%, black 100%")
 //
 // @see http://dev.w3.org/csswg/css3-images/#linear-gradients
 //
 //============================================================
 
-linear-gradient()
-  prefix-value(background-image, s("linear-gradient(%s)", arguments))
+=linear-gradient($arguments)
+  +prefix-value(background-image, linear-gradient(unquote($arguments)))
 
 
 
@@ -355,14 +422,14 @@ linear-gradient()
 // @param colorB              :  #000 50%, red 50%
 // @param colorC              :  #000 100%, red 100%
 //
-// @example radial-gradient(unquote("50% 50%, circle, crimson 0%, black 100%"))
+// @example +radial-gradient("50% 50%, circle, crimson 0%, black 100%")
 //
 // @see http://dev.w3.org/csswg/css3-images/#radial-gradients
 //
 //============================================================
 
-radial-gradient()
-  prefix-value(background-image, s("radial-gradient(%s)", arguments))
+=radial-gradient($arguments)
+  +prefix-value(background-image, radial-gradient(unquote($arguments)))
 
 
 
@@ -380,8 +447,8 @@ radial-gradient()
 //
 //============================================================
 
-transform()
-  prefix-property(transform, arguments)
+=transform($arguments)
+  +prefix-property(transform, unquote($arguments))
 
 
 
@@ -401,8 +468,8 @@ transform()
 //
 //============================================================
 
-transform-origin()
-  prefix-property(transform-origin, arguments)
+=transform-origin($arguments)
+  +prefix-property(transform-origin, unquote($arguments))
 
 
 
@@ -416,8 +483,8 @@ transform-origin()
 //
 //============================================================
 
-transform-style()
-  prefix-property(transform-style, arguments)
+=transform-style($arguments)
+  +prefix-property(transform-style, unquote($arguments))
 
 
 
@@ -431,8 +498,8 @@ transform-style()
 //
 //============================================================
 
-perspective()
-  prefix-property(perspective, arguments)
+=perspective($arguments)
+  +prefix-property(perspective, unquote($arguments))
 
 
 
@@ -451,8 +518,8 @@ perspective()
 //
 //============================================================
 
-perspective-origin()
-  prefix-property(perspective-origin, arguments)
+=perspective-origin($arguments)
+  +prefix-property(perspective-origin, unquote($arguments))
 
 
 
@@ -466,8 +533,8 @@ perspective-origin()
 //
 //============================================================
 
-backface-visibility()
-  prefix-property(backface-visibility, arguments)
+=backface-visibility($arguments)
+  +prefix-property(backface-visibility, unquote($arguments))
 
 
 
@@ -486,8 +553,8 @@ backface-visibility()
 //
 //============================================================
 
-matrix()
-  transform(s("matrix(%s)", arguments))
+=matrix($arguments)
+  +transform(matrix(unquote($arguments)))
 
 
 
@@ -502,8 +569,8 @@ matrix()
 //
 //============================================================
 
-translate()
-  transform(s("translate(%s)", arguments))
+=translate($arguments)
+  +transform(translate(unquote($arguments)))
 
 
 
@@ -518,8 +585,8 @@ translate()
 //
 //============================================================
 
-scale()
-  transform(s("scale(%s)", arguments))
+=scale($arguments)
+  +transform(scale(unquote($arguments)))
 
 
 
@@ -533,8 +600,8 @@ scale()
 //
 //============================================================
 
-rotate()
-  transform(s("rotate(%s)", arguments))
+=rotate($arguments)
+  +transform(rotate(unquote($arguments)))
 
 
 
@@ -549,8 +616,8 @@ rotate()
 //
 //============================================================
 
-skew()
-  transform(s("skew(%s)", arguments))
+=skew($arguments)
+  +transform(skew(unquote($arguments)))
 
 
 
@@ -567,8 +634,8 @@ skew()
 //
 //============================================================
 
-transition()
-  prefix-property(transition, arguments)
+=transition($arguments)
+  +prefix-property(transition, unquote($arguments))
 
 
 
@@ -602,8 +669,8 @@ transition()
 //
 //============================================================
 
-animation()
-  prefix-property(animation, arguments)
+=animation($arguments)
+  +prefix-property(animation, unquote($arguments))
 
 
 
@@ -621,44 +688,44 @@ animation()
 //============================================================
 
 // Cubic
-easeInCubic    = cubic-bezier(0.550, 0.055, 0.675, 0.190)
-easeOutCubic   = cubic-bezier(0.215, 0.610, 0.355, 1.000)
-easeInOutCubic = cubic-bezier(0.645, 0.045, 0.355, 1.000)
+$easeInCubic    : cubic-bezier(0.550, 0.055, 0.675, 0.190)
+$easeOutCubic   : cubic-bezier(0.215, 0.610, 0.355, 1.000)
+$easeInOutCubic : cubic-bezier(0.645, 0.045, 0.355, 1.000)
 
 // Circ
-easeInCirc     = cubic-bezier(0.600, 0.040, 0.980, 0.335)
-easeOutCirc    = cubic-bezier(0.075, 0.820, 0.165, 1.000)
-easeInOutCirc  = cubic-bezier(0.785, 0.135, 0.150, 0.860)
+$easeInCirc     : cubic-bezier(0.600, 0.040, 0.980, 0.335)
+$easeOutCirc    : cubic-bezier(0.075, 0.820, 0.165, 1.000)
+$easeInOutCirc  : cubic-bezier(0.785, 0.135, 0.150, 0.860)
 
 // Expo
-easeInExpo     = cubic-bezier(0.950, 0.050, 0.795, 0.035)
-easeOutExpo    = cubic-bezier(0.190, 1.000, 0.220, 1.000)
-easeInOutExpo  = cubic-bezier(1.000, 0.000, 0.000, 1.000)
+$easeInExpo     : cubic-bezier(0.950, 0.050, 0.795, 0.035)
+$easeOutExpo    : cubic-bezier(0.190, 1.000, 0.220, 1.000)
+$easeInOutExpo  : cubic-bezier(1.000, 0.000, 0.000, 1.000)
 
 // Quad
-easeInQuad     = cubic-bezier(0.550, 0.085, 0.680, 0.530)
-easeOutQuad    = cubic-bezier(0.250, 0.460, 0.450, 0.940)
-easeInOutQuad  = cubic-bezier(0.455, 0.030, 0.515, 0.955)
+$easeInQuad     : cubic-bezier(0.550, 0.085, 0.680, 0.530)
+$easeOutQuad    : cubic-bezier(0.250, 0.460, 0.450, 0.940)
+$easeInOutQuad  : cubic-bezier(0.455, 0.030, 0.515, 0.955)
 
 // Quart
-easeInQuart    = cubic-bezier(0.895, 0.030, 0.685, 0.220)
-easeOutQuart   = cubic-bezier(0.165, 0.840, 0.440, 1.000)
-easeInOutQuart = cubic-bezier(0.770, 0.000, 0.175, 1.000)
+$easeInQuart    : cubic-bezier(0.895, 0.030, 0.685, 0.220)
+$easeOutQuart   : cubic-bezier(0.165, 0.840, 0.440, 1.000)
+$easeInOutQuart : cubic-bezier(0.770, 0.000, 0.175, 1.000)
 
 // Quint
-easeInQuint    = cubic-bezier(0.755, 0.050, 0.855, 0.060)
-easeOutQuint   = cubic-bezier(0.230, 1.000, 0.320, 1.000)
-easeInOutQuint = cubic-bezier(0.860, 0.000, 0.070, 1.000)
+$easeInQuint    : cubic-bezier(0.755, 0.050, 0.855, 0.060)
+$easeOutQuint   : cubic-bezier(0.230, 1.000, 0.320, 1.000)
+$easeInOutQuint : cubic-bezier(0.860, 0.000, 0.070, 1.000)
 
 // Sine
-easeInSine     = cubic-bezier(0.470, 0.000, 0.745, 0.715)
-easeOutSine    = cubic-bezier(0.390, 0.575, 0.565, 1.000)
-easeInOutSine  = cubic-bezier(0.445, 0.050, 0.550, 0.950)
+$easeInSine     : cubic-bezier(0.470, 0.000, 0.745, 0.715)
+$easeOutSine    : cubic-bezier(0.390, 0.575, 0.565, 1.000)
+$easeInOutSine  : cubic-bezier(0.445, 0.050, 0.550, 0.950)
 
 // Back
-easeInBack     = cubic-bezier(0.600, -0.280, 0.735, 0.045)
-easeOutBack    = cubic-bezier(0.175,  0.885, 0.320, 1.275)
-easeInOutBack  = cubic-bezier(0.680, -0.550, 0.265, 1.550)
+$easeInBack     : cubic-bezier(0.600, -0.280, 0.735, 0.045)
+$easeOutBack    : cubic-bezier(0.175,  0.885, 0.320, 1.275)
+$easeInOutBack  : cubic-bezier(0.680, -0.550, 0.265, 1.550)
 
 
 
