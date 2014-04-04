@@ -13,23 +13,26 @@ $gutter: 30px
 @function img($url)
   @return url(image-path($url))
 
+@function negative($size)
+  @return $size * -1
 
-//============================================================
-//
-// Vertically center absolute positioned elements
-//
-// height: $elementHeight
-// top: 50%
-// margin-top: negativeHalf($elementHeight)
-//
-//============================================================
 @function negativeHalf($size)
-  @return (($size / 2) * -1)
+  @return negative($size / 2)
 
 
 // Misc.
 //============================================================
-@mixin triangle($color: #000, $width: 30px, $height: 30px)
+=keyframes($name)
+  @-webkit-keyframes #{$name}
+    @content
+  @-moz-keyframes #{$name}
+    @content
+  @-ms-keyframes #{$name}
+    @content
+  @keyframes #{$name}
+    @content
+
+=triangle($color: #000, $width: 30px, $height: 30px)
   width: 0
   height: 0
   border-style: solid
@@ -37,7 +40,7 @@ $gutter: 30px
   border-color: transparent transparent $color transparent
 
 
-@mixin clearfix
+=clearfix
   zoom: 1
   &:before, &:after
     content: ""
@@ -47,20 +50,19 @@ $gutter: 30px
     clear: both
 
 
-@mixin antialias
+=antialias
   -webkit-font-smoothing: antialiased
 
 
 // Text wrapping
 //============================================================
-
-@mixin ellipsis
+=ellipsis
   white-space: nowrap
   overflow: hidden
   text-overflow: ellipsis
 
 
-@mixin wrap-text
+=wrap-text
   white-space: normal
   overflow: visible
 
@@ -73,7 +75,7 @@ $gutter: 30px
 // font-family: "SSGizmo"
 //
 //============================================================
-@mixin icon
+=icon
   font-style: normal
   font-weight: normal
   text-decoration: none
@@ -96,30 +98,29 @@ $gutter: 30px
 //
 //============================================================
 
-@mixin respond-to($media)
+=respond-to($media)
   @media only screen and ($media)
     @content
 
 
-@mixin max-width($media)
+=max-width($media)
   @media only screen and (max-width: $media)
     @content
 
 
-@mixin min-width($media)
+=min-width($media)
   @media only screen and (min-width: $media)
     @content
 
 
-@mixin max-height($media)
+=max-height($media)
   @media only screen and (max-height: $media)
     @content
 
 
-@mixin min-height($media)
+=min-height($media)
   @media only screen and (min-height: $media)
     @content
-
 
 //============================================================
 //
