@@ -1,0 +1,19 @@
+@import 'variables';
+
+@function em($pixels, $context: $font_size_body) {
+  @return #{$pixels / $context}em;
+  // em(36, 18) = 2em
+}
+
+@function perc($inner, $container: $w_wrap) {
+  @return percentage($inner / $container);
+  // perc(50px, 100px) = 50%
+}
+
+@function negative($size) {
+  @return $size * -1;
+}
+
+@function negativeHalf($size) {
+  @return negative($size / 2);
+}

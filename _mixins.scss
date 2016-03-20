@@ -1,71 +1,56 @@
-// Dimensions
-//============================================================
-$base_width: 1200px
-$gutter: 30px
+@mixin vertAlign {
+  @include transform("translate3d(0, -50%, 0)");
+  position: absolute;
+  top: 50%;
+}
 
+@mixin keyframes($name) {
+  @-webkit-keyframes #{$name} {
+    @content;
+  }
 
-//  Functions
-//============================================================
-@function perc($inner, $container: $base_width)
-  @return percentage($inner/$container)
-  // perc(50px, 100px) = 50%
+  @-moz-keyframes #{$name} {
+    @content;
+  }
 
-@function img($url)
-  @return url(image-path($url))
+  @-ms-keyframes #{$name} {
+    @content;
+  }
 
-@function negative($size)
-  @return $size * -1
+  @keyframes #{$name} {
+    @content;
+  }
+}
 
-@function negativeHalf($size)
-  @return negative($size / 2)
+@mixin triangle($color: black, $width: 30px, $height: 30px) {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 $width / 2 $height $width / 2;
+  border-color: transparent transparent $color transparent;
+}
 
+@mixin clearfix {
+  zoom: 1;
+  &:before, &:after {
+    content: "";
+    display: table;
+  }
+  &:after {
+    clear: both;
+  }
+}
 
-// Misc.
-//============================================================
-=keyframes($name)
-  @-webkit-keyframes #{$name}
-    @content
-  @-moz-keyframes #{$name}
-    @content
-  @-ms-keyframes #{$name}
-    @content
-  @keyframes #{$name}
-    @content
+@mixin ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
-=triangle($color: #000, $width: 30px, $height: 30px)
-  width: 0
-  height: 0
-  border-style: solid
-  border-width: 0 ($width / 2) $height ($width / 2)
-  border-color: transparent transparent $color transparent
-
-
-=clearfix
-  zoom: 1
-  &:before, &:after
-    content: ""
-    display: table
-
-  &:after
-    clear: both
-
-
-=antialias
-  -webkit-font-smoothing: antialiased
-
-
-// Text wrapping
-//============================================================
-=ellipsis
-  white-space: nowrap
-  overflow: hidden
-  text-overflow: ellipsis
-
-
-=wrap-text
-  white-space: normal
-  overflow: visible
-
+@mixin wrap-text {
+  white-space: normal;
+  overflow: visible;
+}
 
 //============================================================
 //
@@ -75,19 +60,19 @@ $gutter: 30px
 // font-family: "SSGizmo"
 //
 //============================================================
-=icon
-  font-style: normal
-  font-weight: normal
-  text-decoration: none
-  text-rendering: optimizeLegibility
-  white-space: nowrap
-  -moz-font-feature-settings: "liga=1"
-  -moz-font-feature-settings: "liga"
-  -ms-font-feature-settings: "liga" 1
-  -o-font-feature-settings: "liga"
-  font-feature-settings: "liga"
-  -webkit-font-smoothing: antialiased
-
+@mixin icon {
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: none;
+  text-rendering: optimizeLegibility;
+  white-space: nowrap;
+  -moz-font-feature-settings: "liga=1";
+  -moz-font-feature-settings: "liga";
+  -ms-font-feature-settings: "liga" 1;
+  -o-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+}
 
 //============================================================
 //
@@ -98,29 +83,35 @@ $gutter: 30px
 //
 //============================================================
 
-=respond-to($media)
-  @media only screen and ($media)
-    @content
+@mixin respond-to($media) {
+  @media only screen and (#{$media}) {
+    @content;
+  }
+}
 
+@mixin max-width($media) {
+  @media only screen and (max-width: $media) {
+    @content;
+  }
+}
 
-=max-width($media)
-  @media only screen and (max-width: $media)
-    @content
+@mixin min-width($media) {
+  @media only screen and (min-width: $media) {
+    @content;
+  }
+}
 
+@mixin max-height($media) {
+  @media only screen and (max-height: $media) {
+    @content;
+  }
+}
 
-=min-width($media)
-  @media only screen and (min-width: $media)
-    @content
-
-
-=max-height($media)
-  @media only screen and (max-height: $media)
-    @content
-
-
-=min-height($media)
-  @media only screen and (min-height: $media)
-    @content
+@mixin min-height($media) {
+  @media only screen and (min-height: $media) {
+    @content;
+  }
+}
 
 //============================================================
 //
@@ -170,15 +161,11 @@ $gutter: 30px
 //
 //============================================================
 
-
-
 // Default Browser Support
-$defaultWebkitSupport: true
-$defaultFirefoxSupport: true
-$defaultExplorerSupport: true
-$defaultOperaSupport: true
-
-
+$defaultWebkitSupport: true;
+$defaultFirefoxSupport: true;
+$defaultExplorerSupport: true;
+$defaultOperaSupport: true;
 
 //============================================================
 //
@@ -193,18 +180,21 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=prefix-property($property, $value, $supportWebkit: $defaultWebkitSupport, $supportFirefox: $defaultFirefoxSupport, $supportExplorer: $defaultExplorerSupport, $supportOpera: $defaultOperaSupport)
-  @if $supportWebkit
-    -webkit-#{$property}: $value
-  @if $supportFirefox
-    -moz-#{$property}: $value
-  @if $supportExplorer
-    -ms-#{$property}: $value
-  @if $supportOpera
-    -o-#{$property}: $value
-  #{$property}: $value
-
-
+@mixin prefix-property($property, $value, $supportWebkit: $defaultWebkitSupport, $supportFirefox: $defaultFirefoxSupport, $supportExplorer: $defaultExplorerSupport, $supportOpera: $defaultOperaSupport) {
+  @if $supportWebkit {
+    -webkit-#{$property}: $value;
+  }
+  @if $supportFirefox {
+    -moz-#{$property}: $value;
+  }
+  @if $supportExplorer {
+    -ms-#{$property}: $value;
+  }
+  @if $supportOpera {
+    -o-#{$property}: $value;
+  }
+  #{$property}: $value;
+}
 
 //============================================================
 //
@@ -219,18 +209,21 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=prefix-value($property, $value, $supportWebkit: $defaultWebkitSupport, $supportFirefox: $defaultFirefoxSupport, $supportExplorer: $defaultExplorerSupport, $supportOpera: $defaultOperaSupport)
-  @if $supportWebkit
-    #{$property}: -webkit-#{$value}
-  @if $supportFirefox
-    #{$property}: -moz-#{$value}
-  @if $supportExplorer
-    #{$property}: -ms-#{$value}
-  @if $supportOpera
-    #{$property}: -o-#{$value}
-  #{$property}: $value
-
-
+@mixin prefix-value($property, $value, $supportWebkit: $defaultWebkitSupport, $supportFirefox: $defaultFirefoxSupport, $supportExplorer: $defaultExplorerSupport, $supportOpera: $defaultOperaSupport) {
+  @if $supportWebkit {
+    #{$property}: -webkit-#{$value};
+  }
+  @if $supportFirefox {
+    #{$property}: -moz-#{$value};
+  }
+  @if $supportExplorer {
+    #{$property}: -ms-#{$value};
+  }
+  @if $supportOpera {
+    #{$property}: -o-#{$value};
+  }
+  #{$property}: $value;
+}
 
 //============================================================
 //
@@ -241,10 +234,9 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=display-box
-  +prefix-value(display, box)
-
-
+@mixin display-box {
+  @include prefix-value(display, box);
+}
 
 //============================================================
 //
@@ -259,10 +251,9 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=box-orient($arguments)
-  +prefix-property(box-orient, unquote($arguments))
-
-
+@mixin box-orient($arguments) {
+  @include prefix-property(box-orient, unquote($arguments));
+}
 
 //============================================================
 //
@@ -278,10 +269,9 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=box-pack($arguments)
-  +prefix-property(box-pack, unquote($arguments))
-
-
+@mixin box-pack($arguments) {
+  @include prefix-property(box-pack, unquote($arguments));
+}
 
 //============================================================
 //
@@ -298,10 +288,9 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=box-align($arguments)
-  +prefix-property(box-align, unquote($arguments))
-
-
+@mixin box-align($arguments) {
+  @include prefix-property(box-align, unquote($arguments));
+}
 
 //============================================================
 //
@@ -314,10 +303,9 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=box-flex($arguments)
-  +prefix-property(box-flex, unquote($arguments))
-
-
+@mixin box-flex($arguments) {
+  @include prefix-property(box-flex, unquote($arguments));
+}
 
 //============================================================
 //
@@ -332,10 +320,9 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=box-sizing($arguments)
-  +prefix-property(box-sizing, unquote($arguments))
-
-
+@mixin box-sizing($arguments) {
+  @include prefix-property(box-sizing, unquote($arguments));
+}
 
 //============================================================
 //
@@ -353,11 +340,10 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=user-select($arguments)
-  +prefix-property(user-select, unquote($arguments))
-  +prefix-property(touch-callout, unquote($arguments), true, false, false, false)
-
-
+@mixin user-select($arguments) {
+  @include prefix-property(user-select, unquote($arguments));
+  @include prefix-property(touch-callout, unquote($arguments), true, false, false, false);
+}
 
 //============================================================
 //
@@ -384,10 +370,9 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=appearance($arguments)
-  +prefix-property(appearance, unquote($arguments), true, true, false, false)
-
-
+@mixin appearance($arguments) {
+  @include prefix-property(appearance, unquote($arguments), true, true, false, false);
+}
 
 //============================================================
 //
@@ -404,10 +389,9 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=linear-gradient($arguments)
-  +prefix-value(background-image, linear-gradient(unquote($arguments)))
-
-
+@mixin linear-gradient($arguments) {
+  @include prefix-value(background-image, linear-gradient(unquote($arguments)));
+}
 
 //============================================================
 //
@@ -429,10 +413,9 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=radial-gradient($arguments)
-  +prefix-value(background-image, radial-gradient(unquote($arguments)))
-
-
+@mixin radial-gradient($arguments) {
+  @include prefix-value(background-image, radial-gradient(unquote($arguments)));
+}
 
 //============================================================
 //
@@ -448,10 +431,9 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=transform($arguments)
-  +prefix-property(transform, unquote($arguments))
-
-
+@mixin transform($arguments) {
+  @include prefix-property(transform, unquote($arguments));
+}
 
 //============================================================
 //
@@ -469,10 +451,9 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=transform-origin($arguments)
-  +prefix-property(transform-origin, unquote($arguments))
-
-
+@mixin transform-origin($arguments) {
+  @include prefix-property(transform-origin, unquote($arguments));
+}
 
 //============================================================
 //
@@ -484,10 +465,9 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=transform-style($arguments)
-  +prefix-property(transform-style, unquote($arguments))
-
-
+@mixin transform-style($arguments) {
+  @include prefix-property(transform-style, unquote($arguments));
+}
 
 //============================================================
 //
@@ -499,10 +479,9 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=perspective($arguments)
-  +prefix-property(perspective, unquote($arguments))
-
-
+@mixin perspective($arguments) {
+  @include prefix-property(perspective, unquote($arguments));
+}
 
 //============================================================
 //
@@ -519,10 +498,9 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=perspective-origin($arguments)
-  +prefix-property(perspective-origin, unquote($arguments))
-
-
+@mixin perspective-origin($arguments) {
+  @include prefix-property(perspective-origin, unquote($arguments));
+}
 
 //============================================================
 //
@@ -534,10 +512,9 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=backface-visibility($arguments)
-  +prefix-property(backface-visibility, unquote($arguments))
-
-
+@mixin backface-visibility($arguments) {
+  @include prefix-property(backface-visibility, unquote($arguments));
+}
 
 //============================================================
 //
@@ -554,10 +531,9 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=matrix($arguments)
-  +transform(matrix(unquote($arguments)))
-
-
+@mixin matrix($arguments) {
+  @include transform(matrix(unquote($arguments)));
+}
 
 //============================================================
 //
@@ -570,10 +546,9 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=translate($arguments)
-  +transform(translate(unquote($arguments)))
-
-
+@mixin translate($arguments) {
+  @include transform(translate(unquote($arguments)));
+}
 
 //============================================================
 //
@@ -586,10 +561,9 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=scale($arguments)
-  +transform(scale(unquote($arguments)))
-
-
+@mixin scale($arguments) {
+  @include transform(scale(unquote($arguments)));
+}
 
 //============================================================
 //
@@ -601,10 +575,9 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=rotate($arguments)
-  +transform(rotate(unquote($arguments)))
-
-
+@mixin rotate($arguments) {
+  @include transform(rotate(unquote($arguments)));
+}
 
 //============================================================
 //
@@ -617,10 +590,9 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=skew($arguments)
-  +transform(skew(unquote($arguments)))
-
-
+@mixin skew($arguments) {
+  @include transform(skew(unquote($arguments)));
+}
 
 //============================================================
 //
@@ -635,10 +607,9 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=transition($arguments)
-  +prefix-property(transition, unquote($arguments))
-
-
+@mixin transition($arguments) {
+  @include prefix-property(transition, unquote($arguments));
+}
 
 //============================================================
 //
@@ -670,10 +641,9 @@ $defaultOperaSupport: true
 //
 //============================================================
 
-=animation($arguments)
-  +prefix-property(animation, unquote($arguments))
-
-
+@mixin animation($arguments) {
+  @include prefix-property(animation, unquote($arguments));
+}
 
 //============================================================
 //
@@ -689,46 +659,44 @@ $defaultOperaSupport: true
 //============================================================
 
 // Cubic
-$easeInCubic    : cubic-bezier(0.550, 0.055, 0.675, 0.190)
-$easeOutCubic   : cubic-bezier(0.215, 0.610, 0.355, 1.000)
-$easeInOutCubic : cubic-bezier(0.645, 0.045, 0.355, 1.000)
+$easeInCubic: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+$easeOutCubic: cubic-bezier(0.215, 0.61, 0.355, 1);
+$easeInOutCubic: cubic-bezier(0.645, 0.045, 0.355, 1);
 
 // Circ
-$easeInCirc     : cubic-bezier(0.600, 0.040, 0.980, 0.335)
-$easeOutCirc    : cubic-bezier(0.075, 0.820, 0.165, 1.000)
-$easeInOutCirc  : cubic-bezier(0.785, 0.135, 0.150, 0.860)
+$easeInCirc: cubic-bezier(0.6, 0.04, 0.98, 0.335);
+$easeOutCirc: cubic-bezier(0.075, 0.82, 0.165, 1);
+$easeInOutCirc: cubic-bezier(0.785, 0.135, 0.15, 0.86);
 
 // Expo
-$easeInExpo     : cubic-bezier(0.950, 0.050, 0.795, 0.035)
-$easeOutExpo    : cubic-bezier(0.190, 1.000, 0.220, 1.000)
-$easeInOutExpo  : cubic-bezier(1.000, 0.000, 0.000, 1.000)
+$easeInExpo: cubic-bezier(0.95, 0.05, 0.795, 0.035);
+$easeOutExpo: cubic-bezier(0.19, 1, 0.22, 1);
+$easeInOutExpo: cubic-bezier(1, 0, 0, 1);
 
 // Quad
-$easeInQuad     : cubic-bezier(0.550, 0.085, 0.680, 0.530)
-$easeOutQuad    : cubic-bezier(0.250, 0.460, 0.450, 0.940)
-$easeInOutQuad  : cubic-bezier(0.455, 0.030, 0.515, 0.955)
+$easeInQuad: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+$easeOutQuad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+$easeInOutQuad: cubic-bezier(0.455, 0.03, 0.515, 0.955);
 
 // Quart
-$easeInQuart    : cubic-bezier(0.895, 0.030, 0.685, 0.220)
-$easeOutQuart   : cubic-bezier(0.165, 0.840, 0.440, 1.000)
-$easeInOutQuart : cubic-bezier(0.770, 0.000, 0.175, 1.000)
+$easeInQuart: cubic-bezier(0.895, 0.03, 0.685, 0.22);
+$easeOutQuart: cubic-bezier(0.165, 0.84, 0.44, 1);
+$easeInOutQuart: cubic-bezier(0.77, 0, 0.175, 1);
 
 // Quint
-$easeInQuint    : cubic-bezier(0.755, 0.050, 0.855, 0.060)
-$easeOutQuint   : cubic-bezier(0.230, 1.000, 0.320, 1.000)
-$easeInOutQuint : cubic-bezier(0.860, 0.000, 0.070, 1.000)
+$easeInQuint: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+$easeOutQuint: cubic-bezier(0.23, 1, 0.32, 1);
+$easeInOutQuint: cubic-bezier(0.86, 0, 0.07, 1);
 
 // Sine
-$easeInSine     : cubic-bezier(0.470, 0.000, 0.745, 0.715)
-$easeOutSine    : cubic-bezier(0.390, 0.575, 0.565, 1.000)
-$easeInOutSine  : cubic-bezier(0.445, 0.050, 0.550, 0.950)
+$easeInSine: cubic-bezier(0.47, 0, 0.745, 0.715);
+$easeOutSine: cubic-bezier(0.39, 0.575, 0.565, 1);
+$easeInOutSine: cubic-bezier(0.445, 0.05, 0.55, 0.95);
 
 // Back
-$easeInBack     : cubic-bezier(0.600, -0.280, 0.735, 0.045)
-$easeOutBack    : cubic-bezier(0.175,  0.885, 0.320, 1.275)
-$easeInOutBack  : cubic-bezier(0.680, -0.550, 0.265, 1.550)
-
-
+$easeInBack: cubic-bezier(0.6, -0.28, 0.735, 0.045);
+$easeOutBack: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+$easeInOutBack: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
 //============================================================
 //
