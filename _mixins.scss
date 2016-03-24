@@ -21,9 +21,17 @@
   #{$property}: $formula;
 }
 
-// Fluid text mixin
+// Fluid Text Usage
 // h1 {
-//   @include fp(font-size, 50, 100); //50px at 320, 100px at 1920;
+//   //font-size of 100px at 320, scaling down to 50px at 1920
+//   @include fp(height, 100, 50);
+//
+//   //width 100px at 320, scaling up to 50px at 1024
+//   @include fp(width, 100, 10, $end:1024);
+//
+//   border-top-width of 5px at 320, scaling up to 20px at 768
+//   //scaling onwards infinitely past 768
+//   @include fp(border-width, 100, 10, $max:768, $clipAtEnd:false);
 // }
 
 @mixin keyframes($name) {
