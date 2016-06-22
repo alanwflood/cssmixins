@@ -4,6 +4,25 @@
   top: 50%;
 }
 
+@mixin horiz-align {
+   @include transform(translate3d(-50%, 0, 0));
+  position: absolute;
+  left: 50%;
+}
+
+@mixin center-align {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  @include transform(translate3d(-50%, -50%, 0));
+}
+
+@mixin antialias-text {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 @mixin fp($property, $min, $max, $start: 320, $end: 1920, $clip: true, $clipAtStart: true, $clipAtEnd: true) {
   $multiplier: ($max - $min) / ($end - $start) * 100;
   $adder: ($min * $end - $max * $start) / ($end - $start);
